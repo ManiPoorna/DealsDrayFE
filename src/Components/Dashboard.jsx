@@ -39,7 +39,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/dealsdray/get-employee-list"
+          "http://dealsdraybe-1.onrender.com/dealsdray/get-employee-list"
         );
         setTimeout(() => {
           updateRoles(response.data.data);

@@ -53,7 +53,7 @@ const AddEmployee = ({
 
      if (type === "Create") {
        const response = await axios.post(
-         "http://localhost:3000/dealsdray/create-employee",
+         "http://dealsdraybe-1.onrender.com/dealsdray/create-employee",
          employee
        );
        if (response.data.status != 201) {
@@ -71,7 +71,7 @@ const AddEmployee = ({
        }
      } else if(type === "Edit"){
        const response = await axios.post(
-         `http://localhost:3000/dealsdray/update-employee?email=${email}`,
+         `http://dealsdraybe-1.onrender.com/dealsdray/update-employee?email=${email}`,
          employee
        );
        if (response.data.status != 201) {

@@ -27,7 +27,7 @@ const Employeelist1 = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/dealsdray/get-employee-list"
+          "http://dealsdraybe-1.onrender.com/dealsdray/get-employee-list"
         );
         setTimeout(() => {
           setEmployeeList(response.data.data);
@@ -57,7 +57,7 @@ const Employeelist1 = () => {
     if (confirmation) {
       try {
         const response = await axios.post(
-          `http://localhost:3000/dealsdray/delete-employee?email=${email}`
+          `http://dealsdraybe-1.onrender.com/dealsdray/delete-employee?email=${email}`
         );
         if (response.data.status !== 200) {
           setTimeout(() => {

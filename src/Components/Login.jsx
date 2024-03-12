@@ -23,7 +23,7 @@ function Login() {
     }
     try {
       const response = await axios.post(
-        "http://localhost:3000/dealsdray/login",
+        "http://dealsdraybe-1.onrender.com/dealsdray/login",
         { loginId: loginId, password: password }
       )
       if (parseInt(response.data.status) != 200) {

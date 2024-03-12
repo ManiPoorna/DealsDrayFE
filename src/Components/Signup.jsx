@@ -36,7 +36,7 @@ function Signup() {
     } else {
       try {
         const response = await axios.post(
-          "http://localhost:3000/dealsdray/signup",
+          "http://dealsdraybe-1.onrender.com/dealsdray/signup",
           user
         );
         if (parseInt(response.data.status) != 201) {
