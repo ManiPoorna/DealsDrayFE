@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import Header from "./Header";
+import { useNavigate } from "react-router-dom";
 import AddEmployee1 from "./AddEmployee1";
 import { Chartdata } from "./Chartdata";
 import { toast } from "react-toastify";
@@ -11,10 +12,28 @@ const Dashboard = () => {
   const [user, setUser] = useState({ username: "" });
   const [rolesData, setRolesData] = useState({ manager: 0, sales: 0, hr: 0 });
 
+  const navigate = useNavigate();
+
+  const checkUserLoggedIn = async (userObj) => {
+    const response = await axios.post(
+      "http://localhost:3000/dealsdray/user-login-check",
+      {
+        email: userObj.email,
+      }
+    );
+    //  console.log(response.data);
+    if (response.data.data.isLoggedin) {
+      navigate("/dealsdray/dashboard");
+    } else {
+      toast.error("You are not authorized please login to continue");
+      navigate("/dealsdray/login");
+    }
+  };
 
   function updateUser() {
     const userObj = JSON.parse(localStorage.getItem("user"));
     setUser(userObj);
+    checkUserLoggedIn(userObj);
   }
   // funtion to get employee designation data
   function updateRoles(data) {
@@ -32,14 +51,18 @@ const Dashboard = () => {
         return employee.designation === "HR";
       });
     }
-    setRolesData({ manager: manager.length, sales: sales.length, hr: hr.length });
+    setRolesData({
+      manager: manager.length,
+      sales: sales.length,
+      hr: hr.length,
+    });
   }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://dealsdraybe-1.onrender.com/dealsdray/get-employee-list"
+          "http://localhost:3000/dealsdray/get-employee-list"
         );
         setTimeout(() => {
           updateRoles(response.data.data);

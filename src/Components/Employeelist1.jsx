@@ -8,6 +8,7 @@ import Loader from "./Loader";
 import AddEmployee1 from "./AddEmployee1";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { useNavigate } from "react-router-dom";
 
 const Employeelist1 = () => {
   const [employeeList, setEmployeeList] = useState([]);
@@ -15,19 +16,40 @@ const Employeelist1 = () => {
   const [user, setUser] = useState({ username: "" });
   const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [employeeObj, setEmployeeObj] = useState({});
+  const navigate = useNavigate();
+
+
+  const checkUserLoggedIn = async (userObj) => {
+    const response = await axios.post(
+      "http://localhost:3000/dealsdray/user-login-check",
+      {
+        email: userObj.email,
+      }
+    );
+    //  console.log(response.data);
+    if (response.data.data.isLoggedin) {
+      navigate("/dealsdray/employee-list");
+    } else {
+      toast.error("You are not authorized please login to continue");
+      navigate("/dealsdray/login");
+    }
+  };
 
   // get loggedin user data
   function updateUser() {
     const userObj = JSON.parse(localStorage.getItem("user"));
     setUser(userObj);
+    checkUserLoggedIn(userObj);
   }
+
+  
 
   useEffect(() => {
     setLoader(true);
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://dealsdraybe-1.onrender.com/dealsdray/get-employee-list"
+          "http://localhost:3000/dealsdray/get-employee-list"
         );
         setTimeout(() => {
           setEmployeeList(response.data.data);
@@ -57,7 +79,7 @@ const Employeelist1 = () => {
     if (confirmation) {
       try {
         const response = await axios.post(
-          `http://dealsdraybe-1.onrender.com/dealsdray/delete-employee?email=${email}`
+          `http://localhost:3000/dealsdray/delete-employee?email=${email}`
         );
         if (response.data.status !== 200) {
           setTimeout(() => {
@@ -65,12 +87,12 @@ const Employeelist1 = () => {
           }, 1500);
         } else {
           setTimeout(() => {
-            toast.success(response.data.message, + "Please refresh the Page");
+            toast.success(response.data.message, +"Please refresh the Page");
           }, 1500);
         }
       } catch (error) {
         setTimeout(() => {
-          toast.error("Some Error Occured ",error.message);
+          toast.error("Some Error Occured ", error.message);
         }, 1500);
       }
     }
@@ -103,32 +125,36 @@ const Employeelist1 = () => {
           </tr>
           <tbody>
             {loader ? <Loader /> : <></>}
-            {
-              employeeList.length === 0 && !loader? <h1>No Employees </h1> : <></>
-            }
+            {employeeList.length === 0 && !loader ? (
+              <h1>No Employees </h1>
+            ) : (
+              <></>
+            )}
             {employeeList &&
               employeeList.map((employee, index) => (
                 <tr key={index}>
                   <th>{index + 1}</th>
                   <td>{employee.name}</td>
-                  <td>Image</td>
+                  <td>
+                    <img className="image" src={employee.image} alt="image" />
+                  </td>
                   <td>{employee.email}</td>
                   <td>{employee.mobile}</td>
                   <td>{employee.designation}</td>
                   <td>{employee.gender}</td>
-                  <td>{employee.course}</td>
+                  <td>{employee.course.join(",")}</td>
                   <td>{employee.date.substr(0, 10)}</td>
                   <td>
                     <button
                       onClick={() => editEmployee(employee)}
                       className="btn">
-                      <EditIcon/>
+                      <EditIcon />
                     </button>
                     <span> </span>
                     <button
                       onClick={() => deleteEmployee(employee.email)}
                       className="btn">
-                      <DeleteForeverIcon/>
+                      <DeleteForeverIcon />
                     </button>
                   </td>
                 </tr>

@@ -1,8 +1,30 @@
 /* eslint-disable react/prop-types */
 
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Header = ({ username, logout, dashboard }) => {
+  const [user, setUser] = useState("")
+  
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    setUser(user)
+  },[])
+
+  const handleLogout = async() => {
+    const response = await axios.post("http://localhost:3000/dealsdray/logout", {
+      email : user.email
+    })
+    console.log(response)
+    if (response) {
+      toast.success(response.data.message)
+      navigate("/dealsdray/login")
+    }
+  }
+
+
   const navigate = useNavigate();
   return (
     <div className="d-flex header">
@@ -28,7 +50,7 @@ const Header = ({ username, logout, dashboard }) => {
         ) : (
           <></>
         )}
-        {logout ? <div onClick={()=>navigate("/dealsdray/login")} className="btn logout">{username} - Logout</div> : <></>}
+        {logout ? <div onClick={()=>handleLogout()} className="btn logout">{username} - Logout</div> : <></>}
       </div>
     </div>
   );
